@@ -32,14 +32,14 @@ export default function App() {
       console.log('data', data)
 
       if (data.cod === 404) {
-        setError('City not found');
+        setError('Ciudad no encontrada');
         setWeather(undefined);
       } else {
         setWeather(data);
       }
     } catch (err) {
       console.log(err)
-      setError('Failed to fetch weather data');
+      setError('Ha ocurrido un error al obtener el clima');
       setWeather(undefined);
     } finally {
       setLoading(false);
