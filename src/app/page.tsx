@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 import { getWeatherByCity } from '@/api/weather';
 
@@ -17,8 +17,6 @@ export default function Home() {
   const [weather, setWeather] = useState<WeatherResponse>();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-
-  const API_KEY = process.env.NEXT_PUBLIC_OPENWEATHER_API_KEY;
 
   const getWeather = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -38,6 +36,7 @@ export default function Home() {
         setWeather(data);
       }
     } catch (err) {
+      console.log(err)
       setError('Failed to fetch weather data');
       setWeather(undefined);
     } finally {
