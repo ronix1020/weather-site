@@ -1,101 +1,130 @@
-import Image from "next/image";
+'use client';
+
+import { useEffect, useState } from 'react';
+
+import { getWeatherByCity } from '@/api/weather';
+
+import warm from '@/assets/images/warm.png'
+import hot from '@/assets/images/hot.png'
+import cold from '@/assets/images/cold.png'
+import windy from '@/assets/images/windy.png'
+import humidity from '@/assets/images/humidity.png'
+
+import { WeatherResponse } from '@/interfaces/weather';
 
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+  const [city, setCity] = useState('');
+  const [weather, setWeather] = useState<WeatherResponse>();
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
+  const API_KEY = process.env.NEXT_PUBLIC_OPENWEATHER_API_KEY;
+
+  const getWeather = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!city.trim()) return;
+
+    try {
+      setLoading(true);
+      setError('');
+      const data = await getWeatherByCity(city);
+
+      console.log('data', data)
+
+      if (data.cod === 404) {
+        setError('City not found');
+        setWeather(undefined);
+      } else {
+        setWeather(data);
+      }
+    } catch (err) {
+      setError('Failed to fetch weather data');
+      setWeather(undefined);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const onResetCity = () => {
+    setCity('');
+    setWeather(undefined);
+    setError('');
+  }
+
+  return (
+    <div className="flex items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
+      <main className="w-full max-w-md mx-auto space-y-8">
+        <h1 className="text-3xl font-bold text-center mb-8">Simple Clima</h1>
+        
+        <form onSubmit={getWeather} className="space-y-4">
+          <div className="flex gap-2">
+            <input
+              type="text"
+              value={city}
+              onKeyDown={(e) => {
+                e.key === 'Enter' && getWeather(e)
+                e.key === 'Backspace' && setWeather(undefined);
+              }}
+              onChange={(e) => setCity(e.target.value)}
+              placeholder="Ingresa el nombre de una ciudad"
+              className="flex-1 px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-700 bg-background focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
-        </div>
+            <button
+              type="submit"
+              disabled={loading}
+              className="px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 disabled:opacity-50 transition-colors"
+            >
+              {loading ? 'Cargando...' : 'Buscar'}
+            </button>
+          </div>
+        </form>
+
+        {error && (
+          <div className="p-4 bg-red-100 dark:bg-red-900/20 text-red-700 dark:text-red-300 rounded-lg">
+            {error}
+          </div>
+        )}
+
+        {weather !== undefined && (
+          <div className="flex flex-col items-center justify-center p-6 bg-white dark:bg-gray-800 rounded-xl shadow-lg space-y-4">
+            <div className="text-center">
+              <h2 className="text-2xl font-semibold">{weather.name}, {weather.sys.country}</h2>
+              <div className="flex flex-row items-center my-2 justify-center gap-2">
+                <img 
+                  src={weather.main.temp > 25 ? hot.src : weather.main.temp > 15 ? warm.src : cold.src} 
+                  alt={`Weather icon showing ${weather.main.temp > 25 ? 'hot' : weather.main.temp > 15 ? 'warm' : 'cold'} temperature`}
+                  width={32}
+                />
+                <p className="text-4xl font-bold">{Math.round(weather.main.temp)}°C</p>
+              </div>
+              <div className="flex flex-col items-center justify-center">
+                <img src={`https://openweathermap.org/img/wn/${weather.weather[0].icon}@2x.png`} />
+                <p className="text-lg capitalize">{weather.weather[0].description}</p>
+              </div>
+            </div>
+            
+            <div className="grid grid-cols-2 gap-4 mt-4">
+              <div className="flex flex-col items-center text-center p-2 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
+                <img src={windy.src} width={32} className='py-2' />
+                <p className="text-sm text-gray-500 dark:text-gray-400">Humedad</p>
+                <p className="font-semibold">{weather.main.humidity}%</p>
+              </div>
+              <div className="flex flex-col items-center text-center p-2 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
+                <img src={humidity.src} width={32} className='py-2' />
+                <p className="text-sm text-gray-500 dark:text-gray-400">Velocidad del viento</p>
+                <p className="font-semibold">{weather.wind.speed} m/s</p>
+              </div>
+            </div>
+            <button 
+            onClick={onResetCity}
+            className="bg-blue-500 rounded-md">
+              <p className='text-white font-bold p-4'>
+                Buscar otra ciudad
+              </p>
+            </button>
+          </div>
+        )}
       </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
     </div>
   );
 }
