@@ -2,6 +2,8 @@
 
 import { useState } from 'react';
 
+import Image from 'next/image';
+
 import { getWeatherByCity } from '@/api/weather';
 
 import warm from '@/assets/images/warm.png'
@@ -12,7 +14,7 @@ import humidity from '@/assets/images/humidity.png'
 
 import { WeatherResponse } from '@/interfaces/weather';
 
-export default function Home() {
+export default function App() {
   const [city, setCity] = useState('');
   const [weather, setWeather] = useState<WeatherResponse>();
   const [loading, setLoading] = useState(false);
@@ -50,6 +52,18 @@ export default function Home() {
     setError('');
   }
 
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+      switch (e.key) {
+        case 'Enter':
+          e.preventDefault();
+          getWeather(e);
+          break;
+        case 'Escape':
+          onResetCity();
+          break;
+      }
+  }
+
   return (
     <div className="flex items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
       <main className="w-full max-w-md mx-auto space-y-8">
@@ -60,10 +74,7 @@ export default function Home() {
             <input
               type="text"
               value={city}
-              onKeyDown={(e) => {
-                e.key === 'Enter' && getWeather(e)
-                e.key === 'Backspace' && setWeather(undefined);
-              }}
+              onKeyDown={handleKeyDown}
               onChange={(e) => setCity(e.target.value)}
               placeholder="Ingresa el nombre de una ciudad"
               className="flex-1 px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-700 bg-background focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -89,7 +100,7 @@ export default function Home() {
             <div className="text-center">
               <h2 className="text-2xl font-semibold">{weather.name}, {weather.sys.country}</h2>
               <div className="flex flex-row items-center my-2 justify-center gap-2">
-                <img 
+                <Image 
                   src={weather.main.temp > 25 ? hot.src : weather.main.temp > 15 ? warm.src : cold.src} 
                   alt={`Weather icon showing ${weather.main.temp > 25 ? 'hot' : weather.main.temp > 15 ? 'warm' : 'cold'} temperature`}
                   width={32}
@@ -97,19 +108,19 @@ export default function Home() {
                 <p className="text-4xl font-bold">{Math.round(weather.main.temp)}°C</p>
               </div>
               <div className="flex flex-col items-center justify-center">
-                <img src={`https://openweathermap.org/img/wn/${weather.weather[0].icon}@2x.png`} />
+                <Image src={`https://openweathermap.org/img/wn/${weather.weather[0].icon}@2x.png`} alt="weather-icon" />
                 <p className="text-lg capitalize">{weather.weather[0].description}</p>
               </div>
             </div>
             
             <div className="grid grid-cols-2 gap-4 mt-4">
               <div className="flex flex-col items-center text-center p-2 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
-                <img src={windy.src} width={32} className='py-2' />
+                <Image src={windy.src} width={32} className='py-2' alt="windy-icon" />
                 <p className="text-sm text-gray-500 dark:text-gray-400">Humedad</p>
                 <p className="font-semibold">{weather.main.humidity}%</p>
               </div>
               <div className="flex flex-col items-center text-center p-2 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
-                <img src={humidity.src} width={32} className='py-2' />
+                <Image src={humidity.src} width={32} className='py-2' alt="humidity-icon" />
                 <p className="text-sm text-gray-500 dark:text-gray-400">Velocidad del viento</p>
                 <p className="font-semibold">{weather.wind.speed} m/s</p>
               </div>
