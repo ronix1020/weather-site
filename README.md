@@ -1,36 +1,52 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+## Simple Clima app
 
-## Getting Started
+Una aplicación desarrollada en Next.js que muestra el clima actual de una ciudad.
 
-First, run the development server:
+## Tecnologías utilizadas
+- Next.js
+- Jest (Testing) junto a testing-library/react
+- OpenWeatherMap API
+- Axios
+
+## Instalación
+Para instalar las dependencias del proyecto, ejecuta el siguiente comando:
+
+```bash
+npm install # si estas con npm
+yarn install # si estas con yarn
+```
+
+## Configuración
+Para configurar la aplicación, crea un archivo `.env.local` en la raíz del proyecto y agrega tu API key de OpenWeatherMap
+
+```bash
+NEXT_PUBLIC_OPENWEATHER_API_KEY=tu_api_key
+```
+
+Por razones de seguridad, no he incluido el archivo `.env.local` en el repositorio.
+
+## Uso
+Para iniciar el servidor de desarrollo, ejecuta el siguiente comando:
 
 ```bash
 npm run dev
 # or
 yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Abre el puerto [http://localhost:3000](http://localhost:3000) con tu navegador para explorar.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Pruebas
+Para ejecutar las pruebas, ejecuta el siguiente comando:
+```bash
+npm run test
+# or
+yarn test
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Las pruebas utilizan Jest y Axios. El porcentaje de coverage es superior al 80 % y se cubren aspectos fundamentales desde la prueba de la API y el endpoint hasta la validacion de datos en el input y que se muestren resultados en la vista, como las imagenes. 
+Tambien incluye un snapshot de la vista.
 
-## Learn More
+## Despliegue
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+El proyecto ha sido además desplegado en Vercel, pueden visitarlo en el siguiente link: [Simple Clima App](https://weather-site-smoky-eight.vercel.app/)
