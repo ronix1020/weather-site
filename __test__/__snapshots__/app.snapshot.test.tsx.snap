@@ -1,0 +1,54 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`App Snapshot should match snapshot 1`] = `
+<div>
+  <div
+    class="flex items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]"
+  >
+    <main
+      class="w-full max-w-md mx-auto space-y-8"
+    >
+      <div
+        class="flex flex-col items-center justify-center gap-4"
+      >
+        <img
+          alt="cloudy-icon"
+          data-nimg="1"
+          decoding="async"
+          height="128"
+          loading="lazy"
+          src="/_next/image?url=%2Fimg.jpg&w=256&q=75"
+          srcset="/_next/image?url=%2Fimg.jpg&w=128&q=75 1x, /_next/image?url=%2Fimg.jpg&w=256&q=75 2x"
+          style="color: transparent;"
+          width="128"
+        />
+        <h1
+          class="text-3xl font-bold text-center mb-8"
+        >
+          Simple Clima
+        </h1>
+      </div>
+      <form
+        class="space-y-4"
+      >
+        <div
+          class="flex gap-2"
+        >
+          <input
+            class="flex-1 px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-700 bg-background focus:outline-none focus:ring-2 focus:ring-blue-500"
+            placeholder="Ingresa el nombre de una ciudad"
+            type="text"
+            value=""
+          />
+          <button
+            class="px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 disabled:opacity-50 transition-colors"
+            type="submit"
+          >
+            Buscar
+          </button>
+        </div>
+      </form>
+    </main>
+  </div>
+</div>
+`;
